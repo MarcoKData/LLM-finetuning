@@ -2,11 +2,12 @@ from torch.utils.data import Dataset
 
 
 class ChatData(Dataset):
-  def __init__(self, path, tokenizer, limit):
+  def __init__(self, path, tokenizer, limit=None):
     with open(path, "r") as file:
       self.X = file.readlines()
     
-    self.X = self.X[:limit]
+    if limit is not None:
+      self.X = self.X[:limit]
 
     for i in range(len(self.X)):
       self.X[i] = self.X[i].replace("\n", "").strip()
