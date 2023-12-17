@@ -35,16 +35,7 @@ PATH_DATA = os.path.join(PATH_PROJECT, "data", "alpaca-dataset.txt")
 PATH_MODEL_STATE_SAVE = os.path.join(PATH_PROJECT, "models", "model_state.pt")
 
 
-def pimp_model(path_data, path_save_model, epochs):
-    # Load Pretrained Model and Tokenizer
-    tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
-    tokenizer.pad_token = tokenizer.eos_token
-
-    model = GPT2LMHeadModel.from_pretrained("gpt2")
-    model.resize_token_embeddings(len(tokenizer))
-
-    print(tokenizer.bos_token, tokenizer.eos_token, tokenizer.pad_token)
-
+def pimp_model(model, tokenizer, path_data, path_save_model, epochs):
     # Test Pretrained Model
     prompt_test = "hey i was good at basketball but "
     tokens = tokenizer(prompt_test, return_tensors="pt")
@@ -53,8 +44,8 @@ def pimp_model(path_data, path_save_model, epochs):
     print(f"\n\nUntuned Response to '{prompt_test}':\n{resp}")
 
     # Load Data
-    chat_data = ChatData(path_data, tokenizer, limit=32)
-    chat_data = DataLoader(chat_data, batch_size=16)
+    chat_data = ChatData(path_data, tokenizer)
+    chat_data = DataLoader(chat_data, batch_size=64)
     print("Successfully loaded chat data!")
 
     # Train Model

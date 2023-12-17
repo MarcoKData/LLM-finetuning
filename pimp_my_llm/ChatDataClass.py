@@ -11,6 +11,9 @@ class ChatData(Dataset):
 
     for i in range(len(self.X)):
       self.X[i] = self.X[i].replace("\n", "").strip()
+    
+    for i in range(3):
+      print(self.X[i])
 
     self.X_encoded = tokenizer(self.X, max_length=40, truncation=True, padding="max_length", return_tensors="pt")
     self.input_ids = self.X_encoded["input_ids"]
