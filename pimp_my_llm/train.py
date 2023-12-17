@@ -34,6 +34,7 @@ PATH_PROJECT = os.path.join(".")
 PATH_DATA = os.path.join(PATH_PROJECT, "data", "alpaca-dataset.txt")
 PATH_MODEL_STATE_SAVE = os.path.join(PATH_PROJECT, "models", "model_state.pt")
 
+
 def pimp_model(path_data, path_save_model, epochs):
     # Load Pretrained Model and Tokenizer
     tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
