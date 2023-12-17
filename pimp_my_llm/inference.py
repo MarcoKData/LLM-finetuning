@@ -1,7 +1,11 @@
 import torch
 
 
-def answer_my_question(question, model, tokenizer, device):
+def answer_my_question(question, model, tokenizer):
+  device = "cuda" if torch.cuda.is_available() else "cpu"
+  print("Sending to device", device)
+  model = model.to(device)
+
   inp_in_template = f"{question} <bot>: "
   tokens = tokenizer(inp_in_template, return_tensors="pt")
   X = tokens["input_ids"].to(device)
