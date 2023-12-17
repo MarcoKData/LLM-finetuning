@@ -3,7 +3,6 @@ import torch
 
 def answer_my_question(question, model, tokenizer):
   device = "cuda" if torch.cuda.is_available() else "cpu"
-  print("Sending to device", device)
   model = model.to(device)
 
   inp_in_template = f"{question} <bot>: "
