@@ -5,7 +5,7 @@ import os
 PATH_DATA = os.path.join(".", "data", "alpaca-dataset.txt")
 PATH_SAVE_MODEL = os.path.join(".", "models", "model_state_refactored.pt")
 
-model, tokenizer = pml.get_base_gpt2()
+model, tokenizer = pml.get_base_gpt2("gpt2-medium")
 
 pml.pimp_model(
     model=model,
@@ -15,13 +15,13 @@ pml.pimp_model(
     epochs=1
 )
 
+
 """
 model = pml.load_weights(model, PATH_SAVE_MODEL)
 
 answer = pml.answer_my_question(
     question="How are you today?",
     model=model,
-    tokenizer=tokenizer,
-    device="cpu"
+    tokenizer=tokenizer
 )
 print("Answer:", answer)"""
