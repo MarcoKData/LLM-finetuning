@@ -35,7 +35,7 @@ PATH_DATA = os.path.join(PATH_PROJECT, "data", "alpaca-dataset.txt")
 PATH_MODEL_STATE_SAVE = os.path.join(PATH_PROJECT, "models", "model_state.pt")
 
 
-def pimp_model(model, tokenizer, path_data, path_save_model, epochs):
+def pimp_model(model, tokenizer, path_data, path_save_model, epochs, print_batch_counter):
     # Test Pretrained Model
     prompt_test = "hey i was good at basketball but "
     tokens = tokenizer(prompt_test, return_tensors="pt")
@@ -54,7 +54,7 @@ def pimp_model(model, tokenizer, path_data, path_save_model, epochs):
     print("Sending to device", device)
     model = model.to(device)
 
-    train(chat_data, model, optimizer, epochs, device, path_save_model)
+    train(chat_data, model, optimizer, epochs, device, path_save_model, print_batch_counter)
 
     print("\n\nSuccessfully trained model!")
     print(f"Saved to {path_save_model}")
