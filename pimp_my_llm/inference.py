@@ -1,7 +1,7 @@
 import torch
 
 
-def answer_my_question(question, model, tokenizer):
+def answer_my_question(question, model, tokenizer, max_new_tokens=64):
   device = "cuda" if torch.cuda.is_available() else "cpu"
   model = model.to(device)
 
@@ -9,7 +9,7 @@ def answer_my_question(question, model, tokenizer):
   tokens = tokenizer(inp_in_template, return_tensors="pt")
   X = tokens["input_ids"].to(device)
   a = tokens["attention_mask"].to(device)
-  output = model.generate(X, attention_mask=a, max_new_tokens=64, pad_token_id=tokenizer.eos_token_id)[0]
+  output = model.generate(X, attention_mask=a, max_new_tokens=max_new_tokens, pad_token_id=tokenizer.eos_token_id)[0]
 
   output = tokenizer.decode(output)
 
