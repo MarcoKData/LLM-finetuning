@@ -43,6 +43,7 @@ def pimp_model(model, tokenizer, path_data, path_save_model, epochs, print_batch
     # Test Pretrained Model
     prompt_test = "hey i was good at basketball but "
     tokens = tokenizer(prompt_test, return_tensors="pt")
+    tokens = tokens.to(device)
     resp_tokens = model.generate(**tokens)
     resp = tokenizer.decode(resp_tokens[0])
     print(f"\n\nUntuned Response to '{prompt_test}':\n{resp}")
