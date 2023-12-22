@@ -36,6 +36,10 @@ PATH_MODEL_STATE_SAVE = os.path.join(PATH_PROJECT, "models", "model_state.pt")
 
 
 def pimp_model(model, tokenizer, path_data, path_save_model, epochs, print_batch_counter):
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print("Sending to device", device)
+    model = model.to(device)
+
     # Test Pretrained Model
     prompt_test = "hey i was good at basketball but "
     tokens = tokenizer(prompt_test, return_tensors="pt")
@@ -50,9 +54,6 @@ def pimp_model(model, tokenizer, path_data, path_save_model, epochs, print_batch
 
     # Train Model
     optimizer = Adam(model.parameters())
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    print("Sending to device", device)
-    model = model.to(device)
 
     train(chat_data, model, optimizer, epochs, device, path_save_model, print_batch_counter)
 
