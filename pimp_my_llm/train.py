@@ -1,14 +1,28 @@
+import json
 import os
 import torch
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 from .ChatDataClass import ChatData
 from torch.utils.data import DataLoader
 from torch.optim import Adam
+from .inference import answer_my_question
 
 
 # Help Functions
-def train(chat_data, model, optimizer, epochs, device, path_to_save_model, print_batch_counter=False):
+def train(chat_data, model, tokenizer, optimizer, epochs, device, path_to_save_model, print_batch_counter=False, save_test_results_dest=None, test_prompt=None):
   for i in range(epochs):
+    if save_test_results_dest is not None and test_prompt is not None:
+      # test model and save result to dest
+      test_result = answer_my_question(test_prompt, model, tokenizer)
+
+      with open(save_test_results_dest, "r") as file:
+        results = json.load(file)      
+
+      results[i] = test_result
+
+      with open(save_test_results_dest, "w") as file:
+        file.write(json.dumps(results, indent=4))
+
     print(f"{i + 1}/{epochs}...")
     total_batches = len(chat_data)
     batch_counter = 1
@@ -35,7 +49,7 @@ PATH_DATA = os.path.join(PATH_PROJECT, "data", "alpaca-dataset.txt")
 PATH_MODEL_STATE_SAVE = os.path.join(PATH_PROJECT, "models", "model_state.pt")
 
 
-def pimp_model(model, tokenizer, path_data, path_save_model, epochs, print_batch_counter):
+def pimp_model(model, tokenizer, path_data, path_save_model, epochs, print_batch_counter, save_test_results_dest, test_prompt):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print("Sending to device", device)
     model = model.to(device)
@@ -56,7 +70,18 @@ def pimp_model(model, tokenizer, path_data, path_save_model, epochs, print_batch
     # Train Model
     optimizer = Adam(model.parameters())
 
-    train(chat_data, model, optimizer, epochs, device, path_save_model, print_batch_counter)
+    train(
+      chat_data,
+      model,
+      tokenizer,
+      optimizer,
+      epochs,
+      device,
+      path_save_model,
+      print_batch_counter,
+      save_test_results_dest,
+      test_prompt
+    )
 
     print("\n\nSuccessfully trained model!")
     print(f"Saved to {path_save_model}")
