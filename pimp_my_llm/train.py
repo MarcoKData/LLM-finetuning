@@ -12,7 +12,6 @@ from .inference import answer_my_question
 # Help Functions
 def train(chat_data, model, tokenizer, optimizer, epochs, device, path_to_save_model, print_batch_counter=False, save_test_results_dest=None, test_prompt=None):
   t0 = datetime.now()
-  model_name = path_to_save_model.split(os.pathsep)[-1]
   for i in range(epochs):
     if save_test_results_dest is not None and test_prompt is not None:
       t1 = datetime.now()
@@ -28,7 +27,7 @@ def train(chat_data, model, tokenizer, optimizer, epochs, device, path_to_save_m
         results = json.load(file)      
 
       results.append({
-        "model-name": model_name,
+        "model-path": path_to_save_model,
         "seconds-trained": str(dt_seconds),
         "epochs-trained": str(i),
         "prompt": test_prompt,
