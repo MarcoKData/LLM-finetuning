@@ -12,6 +12,7 @@ from .inference import answer_my_question
 # Help Functions
 def train(chat_data, model, tokenizer, optimizer, epochs, device, path_to_save_model, print_batch_counter=False, save_test_results_dest=None, test_prompt=None):
   t0 = datetime.now()
+  model_name = path_to_save_model.split(os.pathsep)[-1]
   for i in range(epochs):
     if save_test_results_dest is not None and test_prompt is not None:
       t1 = datetime.now()
@@ -19,17 +20,20 @@ def train(chat_data, model, tokenizer, optimizer, epochs, device, path_to_save_m
       # test model and save result to dest
       if not os.path.exists(save_test_results_dest):
         with open(save_test_results_dest, "w") as file:
-          file.write(json.dumps({}, indent=4))
+          file.write(json.dumps([], indent=4))
 
       test_result = answer_my_question(test_prompt, model, tokenizer)
 
       with open(save_test_results_dest, "r") as file:
         results = json.load(file)      
 
-      results[dt_seconds] = {
+      results.append({
+        "model-name": model_name,
+        "seconds-trained": str(dt_seconds),
+        "epochs-trained": str(i),
         "prompt": test_prompt,
         "answer": test_result
-      }
+      })
 
       with open(save_test_results_dest, "w") as file:
         file.write(json.dumps(results, indent=4))
