@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 import os
 import torch
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
@@ -10,8 +11,11 @@ from .inference import answer_my_question
 
 # Help Functions
 def train(chat_data, model, tokenizer, optimizer, epochs, device, path_to_save_model, print_batch_counter=False, save_test_results_dest=None, test_prompt=None):
+  t0 = datetime.now()
   for i in range(epochs):
     if save_test_results_dest is not None and test_prompt is not None:
+      t1 = datetime.now()
+      dt_seconds = (t1 - t0).total_seconds()
       # test model and save result to dest
       if not os.path.exists(save_test_results_dest):
         with open(save_test_results_dest, "w") as file:
@@ -22,7 +26,10 @@ def train(chat_data, model, tokenizer, optimizer, epochs, device, path_to_save_m
       with open(save_test_results_dest, "r") as file:
         results = json.load(file)      
 
-      results[i] = test_result
+      results[dt_seconds] = {
+        "prompt": test_prompt,
+        "answer": test_result
+      }
 
       with open(save_test_results_dest, "w") as file:
         file.write(json.dumps(results, indent=4))
