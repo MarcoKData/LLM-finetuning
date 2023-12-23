@@ -13,6 +13,10 @@ def train(chat_data, model, tokenizer, optimizer, epochs, device, path_to_save_m
   for i in range(epochs):
     if save_test_results_dest is not None and test_prompt is not None:
       # test model and save result to dest
+      if not os.path.exists(save_test_results_dest):
+        with open(save_test_results_dest, "w") as file:
+          file.write(json.dumps({}, indent=4))
+
       test_result = answer_my_question(test_prompt, model, tokenizer)
 
       with open(save_test_results_dest, "r") as file:
