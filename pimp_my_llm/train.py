@@ -21,7 +21,7 @@ def train(chat_data, model, tokenizer, optimizer, epochs, device, path_to_save_m
         with open(save_test_results_dest, "w") as file:
           file.write(json.dumps([], indent=4))
 
-      test_result = answer_my_question(test_prompt, model, tokenizer)
+      test_result = answer_my_question(test_prompt, model, tokenizer, max_new_tokens=512)
 
       with open(save_test_results_dest, "r") as file:
         results = json.load(file)      
