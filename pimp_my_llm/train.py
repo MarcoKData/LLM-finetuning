@@ -10,7 +10,17 @@ from .inference import answer_my_question
 
 
 # Help Functions
-def train(chat_data, model, tokenizer, optimizer, epochs, device, path_to_save_model, print_batch_counter=False, save_test_results_dest=None, test_prompt=None):
+def train(chat_data,
+model,
+tokenizer,
+optimizer,
+epochs,
+device,
+path_to_save_model,
+print_batch_counter=False,
+save_test_results_dest=None,
+test_prompt=None,
+log_prefix=None):
   t0 = datetime.now()
   for i in range(epochs):
     if save_test_results_dest is not None and test_prompt is not None:
@@ -26,13 +36,17 @@ def train(chat_data, model, tokenizer, optimizer, epochs, device, path_to_save_m
       with open(save_test_results_dest, "r") as file:
         results = json.load(file)      
 
-      results.append({
+      entry = {
         "model-path": path_to_save_model,
         "seconds-trained": str(dt_seconds),
         "epochs-trained": str(i),
         "prompt": test_prompt,
         "answer": test_result
-      })
+      }
+      if log_prefix is not None:
+        entry["log_prefix"] = log_prefix
+
+      results.append(entry)
 
       with open(save_test_results_dest, "w") as file:
         file.write(json.dumps(results, indent=4))
@@ -63,7 +77,15 @@ PATH_DATA = os.path.join(PATH_PROJECT, "data", "alpaca-dataset.txt")
 PATH_MODEL_STATE_SAVE = os.path.join(PATH_PROJECT, "models", "model_state.pt")
 
 
-def pimp_model(model, tokenizer, path_data, path_save_model, epochs, print_batch_counter, save_test_results_dest, test_prompt):
+def pimp_model(model,
+tokenizer,
+path_data,
+path_save_model,
+epochs,
+print_batch_counter,
+save_test_results_dest,
+test_prompt,
+log_prefix=None):
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print("Sending to device", device)
     model = model.to(device)
@@ -94,7 +116,8 @@ def pimp_model(model, tokenizer, path_data, path_save_model, epochs, print_batch
       path_save_model,
       print_batch_counter,
       save_test_results_dest,
-      test_prompt
+      test_prompt,
+      log_prefix
     )
 
     print("\n\nSuccessfully trained model!")

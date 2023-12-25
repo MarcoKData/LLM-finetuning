@@ -12,7 +12,8 @@ pml.pimp_model(
     tokenizer=tokenizer,
     path_data=PATH_DATA,
     path_save_model=PATH_SAVE_MODEL,
-    epochs=1
+    epochs=1,
+    log_prefix="Test"
 )
 
 
